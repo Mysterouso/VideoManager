@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test</title>
+    <style>
+        .color{
+            background-color:red;
+            height:200px;            
+        }
+        button{
+            width:60px;
+            height:60px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="color"></div>
+<button class="test-btn"></button>
+
+    
+</body>
+<script>
+    const square = document.querySelector("div")
+    document.querySelector("button").addEventListener("click",()=>testAutoloadBlob())
+
+    function testAutoloadBlob(url){
+        if(!url) url = "https://www.youtube.com/watch?v=jBn8qcNbxWg"
+        square.style.backgroundColor = "blue"
+        fetch("/download",{
+            method:"POST",
+            body:JSON.stringify({url})
+        })
+        .then(response => response.blob())
+        .then(blob =>{
+            square.style.backgroundColor="purple"
+            blob = new Blob([blob],{type:"video/mp4"})
+            const url = URL.createObjectURL(blob);
+            // window.location.href = url
+            return url
+        })
+        .then(url=>{
+            const el = document.createElement("a")
+            el.setAttribute("target","_blank")
+            el.setAttribute("href",url)
+            document.body.appendChild(el)
+            el.click()
+            square.style.backgroundColor="green"
+        })
+        .catch(err => console.error(err));
+    }
+
+
+</script>
+</html>
