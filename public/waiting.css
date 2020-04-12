@@ -11,7 +11,8 @@
     --DARK-BLACK: rgb(25,25,25);
     --GRAY:rgb(55,55,55);
     --loading-bar-offset:12px;
-    --progress: calc(100% - (2 * var(--loading-bar-offset)))
+    /* --progress: calc(100% - (2 * var(--loading-bar-offset))) */
+    --progress:0px;
 }
 body{
     color:var(--HSL-GREEN);

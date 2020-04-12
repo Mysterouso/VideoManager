@@ -1,15 +1,25 @@
 function Pubsub(){
     this.list = {}
 
-    this.subscribe = function (event,fn){
+    this.subscribe = function(event,fn){
                         if(!this.list[event]){
                             this.list[event] = []
                         }
                         this.list[event].push(fn)
                     }
-    this.emit = function (event,data){
+
+    this.unsubscribe = function(event,fn){
+        const eventArr = this.list[event]
+        if ( eventArr == undefined || eventArr.length == 0 ) return console.log("No functions are subscribed to this event to remove: ", event)
+        const index = this.list[event].indexOf(fn)
+        if(index > -1){
+            eventArr.splice(index,1)
+        }
+    }
+
+    this.emit = function(event,data){
         if(!this.list[event]){
-            return
+            return console.log("Event functions do not exist to emit to")
         }
         this.list[event].forEach(fn=>fn(data))
     }
@@ -78,6 +88,7 @@ function postUrl(e){
 function fetchVideo(url,name,progressFn){
 
     return fetchVideoWithProgress(url,name,progressFn)
+    // return defaultVideoFetch(url,name)
 
     function fetchVideoWithProgress(url,name,fn){
         return fetch("/download",{
@@ -103,13 +114,18 @@ function fetchVideo(url,name,progressFn){
 
                 chunks.push(value);
                 receivedLength += value.length;
-
                 console.log(`Received ${receivedLength} of ${contentLength}`)
                 
                 if(fn){
                     fn(receivedLength,contentLength)
                 }
             }
+            // let chunksAll = new Uint8Array(contentLength); // (4.1)
+            // let position = 0;
+            // for(let chunk of chunks) {
+            //     chunksAll.set(chunk, position); // (4.2)
+            //     position += chunk.length;
+            // }
             const blob = new Blob([chunks],{type:"video/mp4"})
             const url = URL.createObjectURL(blob);
             // window.location.href = url

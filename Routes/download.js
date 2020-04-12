@@ -53,7 +53,8 @@ router.post('/', async (req, res) =>{
     }
     else if(name){
         console.log("NAME ROUTE",name)
-        const validVideo = isVideoPathValid(name)
+        const validVideo = isVideoPathValid(`${name}.mp4`)
+        console.log("VALID", validVideo)
         if(!validVideo.isValid){ 
             return sendError(res,404,{success:false,message:"File does not exist"})
         }
